@@ -29,7 +29,8 @@ class Comparer:
     @method _compare: None
         Private method to compare the source and replica folders and store the results in class attributes
     @method file_changed: bool
-        Private method to check if the file has changed by comparing the hash of each file content + name
+        Private method to check if the file has changed by first comparing the size and modification time and later the hash
+        to avoid unnecessary file reading
     """
      
     def __init__(self, source_path: Path, replica_path: Path):
@@ -37,7 +38,7 @@ class Comparer:
         self.replica_path = replica_path
         self._compare() 
 
-    def compare(self) -> None:
+    def _compare(self) -> None:
         """ Compare the source and replica folders and store the results in class attributes """
         self.source_content = [i.name for i in self.source_path.iterdir()]
         self.replica_content = [i.name for i in self.replica_path.iterdir()]
@@ -48,7 +49,17 @@ class Comparer:
         self.diff_files = [i for i in self.common_file_names if self._file_changed(Path(self.source_path, i), Path(self.replica_path, i))]
 
     def _file_changed(self, source_file: Path, replica_file: Path) -> bool:
-        """Check if the file has changed by comparing the hash"""
+        """
+        Check if the file has changed by first comparing the size and modification time and later the hash
+        to avoid unnecessary file reading
+        """
+
+        size_is_equal = source_file.stat().st_size == replica_file.stat().st_size
+        last_MT_is_equal = source_file.stat().st_mtime == replica_file.stat().st_mtime
+
+        if size_is_equal and last_MT_is_equal:
+            return False
+     
         with open(source_file, "rb") as f:
             source_hash = hashlib.md5(f.read())
             f.close()
@@ -56,4 +67,3 @@ class Comparer:
             replica_hash = hashlib.md5(f.read())
             f.close()
         return source_hash.hexdigest() != replica_hash.hexdigest()
-

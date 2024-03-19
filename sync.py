@@ -1,3 +1,4 @@
+from comparer import Comparer
 from pathlib import Path
 import shutil
 import filecmp
@@ -24,7 +25,7 @@ class Synchronizer:
 
     """
     
-    def __init__(self, source, replica, logger):
+    def __init__(self, source: Path, replica: Path, logger):
         """
         Constructor for the Synchronizer object
         
@@ -32,14 +33,14 @@ class Synchronizer:
             Path to the source folder
         @param replica: pathlib.Path 
             Path to the replica folder
-        @param logger: loggin.Logger 
+        @param logger: logging.Logger 
             Logger object responsible for logging the actions to a file and to stdout
         
         """
         self.source = source
         self.replica = replica
         self.logger = logger
-        self.compared = filecmp.dircmp(self.source, self.replica)
+        self.compared = Comparer(self.source, self.replica)
         self.error_message = "Error %s %s -> %s"
         self.log_message = "%s %s -> %s to %s"
         self.delete_message = "Deleting %s -> %s"
@@ -49,7 +50,7 @@ class Synchronizer:
 
     def add_missing_in_backup(self) -> None:
         """Search for files and folders not present in backup but present in source and copy it to backup"""
-        for item in self.compared.left_only:
+        for item in self.compared.source_only:
             to_copy = Path(self.source, item)
             action = "Copying"
             if to_copy.is_file():
@@ -68,7 +69,7 @@ class Synchronizer:
 
     def remove_extra_in_backup(self) -> None:
         """Search for files and folders not present in source but present in backup and remove it from backup"""
-        for item in self.compared.right_only:
+        for item in self.compared.replica_only:
             to_delete = Path(self.replica, item)
             action = "Deleting"
             if to_delete.is_file():
