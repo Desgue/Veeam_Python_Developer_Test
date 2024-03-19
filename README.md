@@ -1,6 +1,35 @@
 # Veeam_Python_Developer_Test
 This is an assessment for a job position at Veeam as a Python Developer in QA
 
+## The Challenge
+
+Please implement a program that synchronizes two folders: source and replica. The
+program should maintain a full, identical copy of source folder at replica folder.
+Solve the test task by writing a program in one of these programming languages:
+
+- Python
+- C/C++
+- C#
+
+1. Synchronization must be one-way: after the synchronization content of the
+replica folder should be modified to exactly match content of the source
+folder;
+
+2. Synchronization should be performed periodically.
+
+3. File creation/copying/removal operations should be logged to a file and to the
+console output;
+
+4. Folder paths, synchronization interval and log file path should be provided using the command line arguments;
+
+5. It is undesirable to use third-party libraries that implement folder
+synchronization;
+
+6. It is allowed (and recommended) to use external libraries implementing other
+well-known algorithms. For example, there is no point in implementing yet
+another function that calculates MD5 if you need it for the task – it is
+perfectly acceptable to use a third-party (or built-in) library.
+
 ## The Final Solution
 In my final approach I decided to implement my own version of the main functionality I need from [filecmp](https://docs.python.org/3/library/filecmp.html).  
 
