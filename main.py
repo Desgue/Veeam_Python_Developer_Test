@@ -1,43 +1,47 @@
 from pathlib import Path
-import shutil
-import filecmp
 import os
 import time
+import argparse
 
 from sync import Synchronizer
 """ Naive Solution """
 
-"""
-1. Check if the source folder exists
-2. Check if the replica folder exists
-3. If Replica folder does not exist, create it and copy the contents of the source folder
-4. If Source and Replica folder exists, check if they have the same content
-5. If they have same content do nothing
-6. If content differs, copy the new content from the source folder to the replica folder
 
-"""
-SOURCE = "C:/Users/guede/code/Veeam_Python_Developer_Test/Source"
-REPLICA = "C:/Users/guede/code/Veeam_Python_Developer_Test/Replica"
-
-
+def configure_parser() -> argparse.ArgumentParser:
+    """ Configure the parser """
+    parser = argparse.ArgumentParser(description="Veeam Folder Synchronizer")
+    parser.add_argument("-s", "--source", help="Source folder to perform backup.", required=True, type=str)
+    parser.add_argument("-b", "--backup", help="Backup folder path.",required=True, type=str)
+    parser.add_argument("-l", "--log", help="Log file path.", required=True, type=str)
+    parser.add_argument("-i", "--interval", help="Interval in seconds. Default is 60s.", required=False, default=60, type=int)
+    return parser
 
 def main() -> None:
     """ Main function """
+    parser = configure_parser()
+    args = parser.parse_args()
+    source = Path(args.source)
+    backup = Path(args.backup)
+    log = Path(args.log)
+
+    if not source.exists():
+        print("source folder does not exist")
+        return
+    if not backup.exists():
+        print("Backup folder does not exist")
+        return
+    if not log.exists():
+        print("Log file does not exist")
+        return
+
+    print(f"Source: {source}\nbackup: {backup}\nInterval: {args.interval}\nLog: {log}")
 
     while True:
 
-        if not Path(SOURCE).exists():
-            print("Source folder does not exist")
-            return
-        if not Path(REPLICA).exists():
-            os.mkdir(REPLICA)
-
-        source = Path(SOURCE)
-        replica = Path(REPLICA)
-        sync = Synchronizer(source, replica)
+        sync = Synchronizer(source, backup)
         sync.synchronize()
 
-        time.sleep(5)
+        time.sleep(args.interval)
 
 if __name__ == "__main__":
     main()
