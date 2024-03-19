@@ -3,6 +3,8 @@ import shutil
 import filecmp
 import os
 import time
+
+from sync import Directory, Watcher, Synchronizer
 """ Naive Solution """
 
 """
@@ -17,10 +19,6 @@ import time
 SOURCE = "C:/Users/guede/code/Veeam_Python_Developer_Test/Source"
 REPLICA = "C:/Users/guede/code/Veeam_Python_Developer_Test/Replica"
 
-def folder_exists(path_to_folder: str) -> bool:
-    """ Check if folder exists"""  
-    return Path(path_to_folder).exists()
-
 def copy_folder_contents(source: str, replica: str) -> None:
     """Copy the contents of the folder, if Replica folder does not yet exist it will be created"""
     return shutil.copytree(
@@ -29,6 +27,7 @@ def copy_folder_contents(source: str, replica: str) -> None:
         copy_function=shutil.copy2,
         dirs_exist_ok=True
         )
+
 def delete_extra_in_replica(source: str, replica: str) -> None:
     """Delete the contents of the folder"""
     c = filecmp.dircmp(source, replica)
@@ -47,6 +46,7 @@ def delete_extra_in_replica(source: str, replica: str) -> None:
 
 def copy_diff_content(source: str, replica: str) -> None:
     """ Copy the different contents between both folders """
+
     c = filecmp.dircmp(source, replica)
     for file in c.diff_files:
         to_copy = Path().joinpath(source, file)
@@ -73,11 +73,25 @@ def sync_folders(source: str, replica: str) -> None:
 
 def main() -> None:
     """ Main function """
+    if not Path(SOURCE).exists():
+        print("Source folder does not exist")
+        return
+    if not Path(REPLICA).exists():
+        os.mkdir(REPLICA)
+
+    source = Path(SOURCE)
+    replica = Path(REPLICA)
+    sync = Synchronizer(source, replica)
+    sync.watcher.watch()
+    
+    return
+
     while True:
-        if not folder_exists(SOURCE):
+        if not Path(SOURCE).exists():
             print("Source folder does not exist")
             break
-        if not folder_exists(REPLICA):
+
+        if not Path(REPLICA).exists():
             print("Replica folder does not exist\nCreating Replica folder and copying source files...")
             copy_folder_contents(SOURCE, REPLICA)
 
