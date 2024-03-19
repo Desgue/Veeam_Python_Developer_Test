@@ -63,9 +63,9 @@ class Synchronizer:
                 try:
                     shutil.copytree(to_copy, Path(self.replica, item), copy_function=shutil.copy2, dirs_exist_ok=True)
                     self.logger.info(self.log_message, action, "folder", to_copy, self.replica)
-
                 except Exception as e:
                     self.logger.error(error_message,action, to_copy, e)
+
     def remove_extra_in_backup(self) -> None:
         """Search for files and folders not present in source but present in backup and remove it from backup"""
         for item in self.compared.right_only:

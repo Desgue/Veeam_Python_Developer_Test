@@ -5,8 +5,6 @@ import argparse
 from sync import Synchronizer
 import logging
 import sys
-""" Naive Solution """
-
 
 def configure_parser() -> argparse.ArgumentParser:
     """ 
@@ -59,14 +57,12 @@ def main() -> None:
         print("\nERROR - Backup folder does not exist")
         return
 
-
     logger.info(f"\nSource: {source}\nbackup: {backup}\nInterval: {args.interval}\nLog: {log}\n")
-    sync = Synchronizer(source, backup, logger)
 
     while True:
+        sync = Synchronizer(source, backup, logger)
         sync.synchronize()
         time.sleep(args.interval)
 
 if __name__ == "__main__":
     main()
-
