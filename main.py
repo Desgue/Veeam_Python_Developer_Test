@@ -4,7 +4,7 @@ import filecmp
 import os
 import time
 
-from sync import Directory, Watcher, Synchronizer
+from sync import Synchronizer
 """ Naive Solution """
 
 """
@@ -19,86 +19,25 @@ from sync import Directory, Watcher, Synchronizer
 SOURCE = "C:/Users/guede/code/Veeam_Python_Developer_Test/Source"
 REPLICA = "C:/Users/guede/code/Veeam_Python_Developer_Test/Replica"
 
-def copy_folder_contents(source: str, replica: str) -> None:
-    """Copy the contents of the folder, if Replica folder does not yet exist it will be created"""
-    return shutil.copytree(
-        source, 
-        replica, 
-        copy_function=shutil.copy2,
-        dirs_exist_ok=True
-        )
 
-def delete_extra_in_replica(source: str, replica: str) -> None:
-    """Delete the contents of the folder"""
-    c = filecmp.dircmp(source, replica)
-    for content in c.right_only:
-        file_path= Path().joinpath(replica, content)
-        try:
-            if file_path.is_file():
-                print(f"Deleting {file_path}")
-                os.unlink(file_path)
-            elif file_path.is_dir():
-                print(f"Deleting {file_path}")
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print(e)
-    return
-
-def copy_diff_content(source: str, replica: str) -> None:
-    """ Copy the different contents between both folders """
-
-    c = filecmp.dircmp(source, replica)
-    for file in c.diff_files:
-        to_copy = Path().joinpath(source, file)
-        if to_copy.is_file():
-            destination = Path().joinpath(replica, file)
-            shutil.copy2(to_copy, destination )
-            print(f"Copying {to_copy} to {destination}")
-        if to_copy.is_dir():
-            copy_folder_contents(to_copy, Path().joinpath(replica, file))
-    for file in c.left_only:
-        to_copy = Path().joinpath(source, file)
-        if to_copy.is_file():
-            shutil.copy2(Path().joinpath(source, file), Path().joinpath(replica, file))
-            print(f"Copying {file} to {replica}")
-        if to_copy.is_dir():
-            copy_folder_contents(to_copy, Path().joinpath(replica, file))
-    return
-
-def sync_folders(source: str, replica: str) -> None:
-    """ Sync the folders """
-    copy_diff_content(source, replica)
-    delete_extra_in_replica(source, replica)
-    return
 
 def main() -> None:
     """ Main function """
-    if not Path(SOURCE).exists():
-        print("Source folder does not exist")
-        return
-    if not Path(REPLICA).exists():
-        os.mkdir(REPLICA)
-
-    source = Path(SOURCE)
-    replica = Path(REPLICA)
-    sync = Synchronizer(source, replica)
-    sync.watcher.watch()
-    
-    return
 
     while True:
+
         if not Path(SOURCE).exists():
             print("Source folder does not exist")
-            break
-
+            return
         if not Path(REPLICA).exists():
-            print("Replica folder does not exist\nCreating Replica folder and copying source files...")
-            copy_folder_contents(SOURCE, REPLICA)
+            os.mkdir(REPLICA)
 
-        sync_folders(SOURCE, REPLICA)
+        source = Path(SOURCE)
+        replica = Path(REPLICA)
+        sync = Synchronizer(source, replica)
+        sync.synchronize()
+
         time.sleep(5)
-        
-    return
 
 if __name__ == "__main__":
     main()
