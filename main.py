@@ -56,7 +56,7 @@ def main() -> None:
     if not backup.exists():
         print("\nERROR - Backup folder does not exist")
         return
-
+    logger.info("Starting Veeam Folder Synchronizer")
     logger.info(f"\nSource: {source}\nbackup: {backup}\nInterval: {args.interval}\nLog: {log}\n")
 
     while True:

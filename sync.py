@@ -56,6 +56,7 @@ class Synchronizer:
             if to_copy.is_file():
                 try:
                     shutil.copy2(to_copy, Path(self.replica, item))
+                    self.logger.info(f"File {to_copy} is not present in replica folder and will be copied.")
                     self.logger.info(self.log_message, action, "file", to_copy, self.replica)
                 except Exception as e:
                     self.logger.error(self.error_message,action, "file", e)
@@ -63,6 +64,7 @@ class Synchronizer:
             if to_copy.is_dir():
                 try:
                     shutil.copytree(to_copy, Path(self.replica, item), copy_function=shutil.copy2, dirs_exist_ok=True)
+                    self.logger.info(f"Folder {to_copy} is not present in replica folder and will be copied.")
                     self.logger.info(self.log_message, action, "folder", to_copy, self.replica)
                 except Exception as e:
                     self.logger.error(error_message,action, to_copy, e)
@@ -75,6 +77,7 @@ class Synchronizer:
             if to_delete.is_file():
                 try:
                     os.unlink(to_delete)
+                    self.logger.info(f"File {to_delete} is not present in source folder and will be deleted from replica.")
                     self.logger.info(self.delete_message, "file", to_delete)
 
                 except Exception as e:
@@ -83,6 +86,7 @@ class Synchronizer:
             if to_delete.is_dir():
                 try:
                     shutil.rmtree(to_delete)
+                    self.logger.info(f"Folder {to_delete} is not present in source folder and will be deleted from replica.")
                     self.logger.info(self.delete_message, "folder", to_delete)
 
                 except Exception as e:
@@ -96,7 +100,8 @@ class Synchronizer:
             if to_copy.is_file():
                 try:
                     shutil.copy2(to_copy, Path(self.replica, item))
-                    self.logger.info(self.log_message, action, "file", to_copy, self.replica)
+                    self.logger.info(f"File {self.source.joinpath(to_copy)} is out of sync with {self.replica.joinpath(item)}.")
+                    self.logger.info(self.log_message, action, "file", to_copy, self.replica.joinpath(item))
                 except Exception as e:
                     self.logger.error(self.error_message, action, "file", to_copy, e)
 
