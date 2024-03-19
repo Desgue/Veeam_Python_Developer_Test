@@ -50,10 +50,10 @@ class Comparer:
     def _file_changed(self, source_file: Path, replica_file: Path) -> bool:
         """Check if the file has changed by comparing the hash"""
         with open(source_file, "rb") as f:
-            source_hash = hashlib.md5(f.read()+source_file.name.encode())
+            source_hash = hashlib.md5(f.read())
             f.close()
         with open(replica_file, "rb") as f:
-            replica_hash = hashlib.md5(f.read()+source_file.name.encode())
+            replica_hash = hashlib.md5(f.read())
             f.close()
         return source_hash.hexdigest() != replica_hash.hexdigest()
 
