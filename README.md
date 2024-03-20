@@ -46,11 +46,11 @@ For that I created a Comparer class that compare two paths and produces lists fo
 
 4. diff_files
     - List of file names that are common between source and replica and have changed.
-    - Uses last modified time and file size for a first comparison to avoid the memory consuming hashing function.
+    - Uses file name, last modified time and file size for a first comparison to avoid the memory consuming hashing function.
     - Uses the md5 hashing function from [hashlib](https://docs.python.org/3/library/hashlib.html) if any of the previous checks fail.
     - This comparison approach makes a tradeoff between security for performance, a production grade tool might have to focus more on security or provide a flag for the user to choose between which approach best suits him.
     
-With that I can implement the Synchronizer class in the same way I was when using the filecmp lib in the naive solution
+With that I can implement the Synchronizer class in the same way when using the [filecmp](https://docs.python.org/3/library/filecmp.html) lib in the [naive solution](https://github.com/Desgue/Veeam_Python_Developer_Test/tree/implement/naive-solution)
 
 
 
@@ -64,7 +64,7 @@ class Synchronizer:
         Path to the source folder
     @param replica: pathlib.Path 
         Path to the replica folder
-    @param logger: loggin.Logger 
+    @param logger: logging.Logger 
         Logger object responsible for logging the actions to a file and to stdout
 
     All methods are only performed in root level of the source and replica folders, thats why there is a recursive call to the synchronize method in the search_child_folders method.
@@ -77,7 +77,7 @@ class Synchronizer:
 
     """
 ```
-This class implements 3 methods that satisfies the requirements for the challenge.
+This class implements 4 methods that satisfies the requirements for the challenge.
 
 1. add_missing_in_backup
     - Checks the source_only list for files or folders that are only present in the source folder and copies them to the replica folder.
@@ -89,7 +89,7 @@ This class implements 3 methods that satisfies the requirements for the challeng
     - Checks the diff_files list for items that are presents in both folders but have different contents and them copies from source folder to replica folder.
 
 4. search_child_folders
-    - Check for folders present in both source and replica folders and peform a recursion creating a new Synchronizer object and performing the same sync process in both child folders until there is no more child folder common between two parent ones.
+    - Check for folders present in both source and replica folders and peform a recursion creating a new Synchronizer object and performing the same sync process in both child folders until there is no more child folder common between two parents.
    
 ## Installation
 ### Requirements
@@ -109,4 +109,34 @@ git clone https://github.com/Desgue/Veeam_Python_Developer_Test/tree/implement/f
 ```bash
 python main.py [--source <path_to_source_folder>] [--backup <path_to_backup_folder>] [--log <path_to_log_file>] [--interval <interval_number_in_seconds>]
  ```
+
+### Arguments
+
+#### `-h`, `--help`
+- Description: Show the help menu that indicates what each command does and how to use it.
+- Usage: `-h` or `--help` 
+
+#### `-s`, `--source`
+- Description: Absolute path for the source folder.
+- Usage: `--source <absolute_path_to_source_folder>` or `-s <absolute_path_to_source_folder>` 
+- Required: True
+- Type: String
+
+#### `-b`, `--backup` 
+- Description: Absolute path to the replica folder.
+- Usage: `--backup <absolute_path_to_replica_folder>` or `-b <absolute_path_to_replica_folder>`
+- Required: True
+- Type: String
+
+#### `-l`, `--log` 
+- Description: Absolute path to the .log file, if the file do not exist it will be created.
+- Usage: `--l <absolute_path_to_log_file>` or `--log <absolute_path_to_log_file>`
+- Required: True
+- Type: String 
+
+#### `-i`, `--interval`
+- Description: Specify the interval time to wich the program will perform the synchronization task. Expressed in seconds. Default is 60 seconds.
+- Usage: `-i <interval_number_in_seconds>` or `--interval <interval_number_in_seconds>`
+- Default: 60s
+- Type: Integer
 
