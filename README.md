@@ -143,7 +143,7 @@ python main.py [--source <path_to_source_folder>] [--backup <path_to_backup_fold
 
 ## Final Considerations
 
-1. Error handling could be improve, for that I need to read the docs of each lib I am using and understand what kind of exceptions can happen with the methods.
+1. Error handling could be improve, for that I need to read the docs of each lib I am using and understand what kind of exceptions can happen.
 2. Even tough I performed manual testing to ensure all behaviors function as expected, an automated test script can be created to check thoroughly.
 3. Better handling of the terminal interface to accept a more gracefull shutdown instead using ctrl+c to stop the script, thus making it possible to also log the end of script session for further analysis.
 
