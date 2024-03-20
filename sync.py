@@ -59,8 +59,8 @@ class Synchronizer:
                     self.logger.info(f"File {to_copy} is not present in replica folder and will be copied.")
                     self.logger.info(self.log_message, action, "file", to_copy, self.replica)
                 except Exception as e:
-                    self.logger.error(self.error_message,action, "file", e)
-                    
+                    self.logger.error(self.error_message,action, to_copy, e)
+                     
             if to_copy.is_dir():
                 try:
                     shutil.copytree(to_copy, Path(self.replica, item), copy_function=shutil.copy2, dirs_exist_ok=True)
@@ -81,7 +81,7 @@ class Synchronizer:
                     self.logger.info(self.delete_message, "file", to_delete)
 
                 except Exception as e:
-                    self.logger.error(self.error_message, action, "file", to_delete, e)
+                    self.logger.error(self.error_message, action, to_delete, e)
 
             if to_delete.is_dir():
                 try:
@@ -90,7 +90,7 @@ class Synchronizer:
                     self.logger.info(self.delete_message, "folder", to_delete)
 
                 except Exception as e:
-                    self.logger.error(self.error_message, action, "folder", to_delete, e)
+                    self.logger.error(self.error_message, action, to_delete, e)
 
     def sync_changed_files(self) -> None:
         """Search for files that have been changed and sync it to replica"""
@@ -103,7 +103,7 @@ class Synchronizer:
                     self.logger.info(f"File {self.source.joinpath(to_copy)} is out of sync with {self.replica.joinpath(item)}.")
                     self.logger.info(self.log_message, action, "file", to_copy, self.replica.joinpath(item))
                 except Exception as e:
-                    self.logger.error(self.error_message, action, "file", to_copy, e)
+                    self.logger.error(self.error_message, action, to_copy, e)
 
     def search_child_folders(self) -> None:
         """Recursively search common folders between source and replica"""
