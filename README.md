@@ -69,20 +69,20 @@ class Synchronizer:
 
     All methods are only performed in root level of the source and replica folders, thats why there is a recursive call to the synchronize method in the search_child_folders method.
 
-    @method add_missing_in_backup: Search for files and folders not present in backup but present in source and copy it to backup
-    @method remove_extra_in_backup: Search for files and folders not present in source but present in backup and remove it from backup 
-    @method sync_changed_files: Search for files that have been changed and sync it to backup
-    @method search_child_folders: Recursively search common folders between source and backup
+    @method add_missing_in_replica: Search for files and folders not present in replica but present in source and copy it to replica
+    @method remove_extra_in_replica: Search for files and folders not present in source but present in replica and remove it from replica 
+    @method sync_changed_files: Search for files that have been changed and sync it to replica
+    @method search_child_folders: Recursively search common folders between source and replica
     @method synchronize: Main method to synchronize the source and replica folders
 
     """
 ```
 This class implements 4 methods that satisfies the requirements for the challenge.
 
-1. add_missing_in_backup
+1. add_missing_in_replica
     - Checks the source_only list for files or folders that are only present in the source folder and copies them to the replica folder.
 
-2. remove_extra_in_backup
+2. remove_extra_in_replica
     - Checks the replica_only list for files or folders that are not present in the source and remove them from the replica folder.
 
 3. sync_changed_files
@@ -107,7 +107,7 @@ git clone https://github.com/Desgue/Veeam_Python_Developer_Test/tree/implement/f
 ## Usage
 
 ```bash
-python main.py [--source <path_to_source_folder>] [--backup <path_to_backup_folder>] [--log <path_to_log_file>] [--interval <interval_number_in_seconds>]
+python main.py [--source <path_to_source_folder>] [--replica <path_to_replica_folder>] [--log <path_to_log_file>] [--interval <interval_number_in_seconds>]
  ```
 
 ### Arguments
@@ -122,9 +122,9 @@ python main.py [--source <path_to_source_folder>] [--backup <path_to_backup_fold
 - Required: True
 - Type: String
 
-#### `-b`, `--backup` 
+#### `-r`, `--replica` 
 - Description: Absolute path to the replica folder.
-- Usage: `--backup <absolute_path_to_replica_folder>` or `-b <absolute_path_to_replica_folder>`
+- Usage: `--replica <absolute_path_to_replica_folder>` or `-b <absolute_path_to_replica_folder>`
 - Required: True
 - Type: String
 
