@@ -13,8 +13,8 @@ def configure_parser() -> argparse.ArgumentParser:
     @return: argparse.ArgumentParser object
      """
     parser = argparse.ArgumentParser(description="Veeam Folder Synchronizer")
-    parser.add_argument("-s", "--source", help="Source folder to perform backup.", required=True, type=str)
-    parser.add_argument("-b", "--backup", help="Backup folder path.",required=True, type=str)
+    parser.add_argument("-s", "--source", help="Source folder to perform replica.", required=True, type=str)
+    parser.add_argument("-r", "--replica", help="replica folder path.",required=True, type=str)
     parser.add_argument("-l", "--log", help="Log file path.", required=True, type=str)
     parser.add_argument("-i", "--interval", help="Interval in seconds. Default is 60s.", required=False, default=60, type=int)
     return parser
@@ -46,21 +46,21 @@ def main() -> None:
     parser = configure_parser()
     args = parser.parse_args()
     source = Path(args.source)
-    backup = Path(args.backup)
+    replica = Path(args.replica)
     log = Path(args.log)
     logger = configure_logger(log_path=log, log_name="Sync")
 
     if not source.exists():
         pritn("\nERROR - Source folder does not exist")
         return
-    if not backup.exists():
-        print("\nERROR - Backup folder does not exist")
+    if not replica.exists():
+        print("\nERROR - replica folder does not exist")
         return
     logger.info("Starting Veeam Folder Synchronizer")
-    logger.info(f"\nSource: {source}\nbackup: {backup}\nInterval: {args.interval}\nLog: {log}\n")
+    logger.info(f"\nSource: {source}\nreplica: {replica}\nInterval: {args.interval}\nLog: {log}\n")
 
     while True:
-        sync = Synchronizer(source, backup, logger)
+        sync = Synchronizer(source, replica, logger)
         sync.synchronize()
         time.sleep(args.interval)
 

@@ -17,10 +17,10 @@ class Synchronizer:
 
     All methods are only performed in root level of the source and replica folders, thats why there is a recursive call to the synchronize method in the search_child_folders method.
 
-    @method add_missing_in_backup: Search for files and folders not present in backup but present in source and copy it to backup
-    @method remove_extra_in_backup: Search for files and folders not present in source but present in backup and remove it from backup 
-    @method sync_changed_files: Search for files that have been changed and sync it to backup
-    @method search_child_folders: Recursively search common folders between source and backup
+    @method add_missing_in_replica: Search for files and folders not present in replica but present in source and copy it to replica
+    @method remove_extra_in_replica: Search for files and folders not present in source but present in replica and remove it from replica 
+    @method sync_changed_files: Search for files that have been changed and sync it to replica
+    @method search_child_folders: Recursively search common folders between source and replica
     @method synchronize: Main method to synchronize the source and replica folders
 
     """
@@ -48,8 +48,8 @@ class Synchronizer:
     def __str__(self):
         return f"Source: {self.source}\nReplica: {self.replica}"
 
-    def add_missing_in_backup(self) -> None:
-        """Search for files and folders not present in backup but present in source and copy it to backup"""
+    def add_missing_in_replica(self) -> None:
+        """Search for files and folders not present in replica but present in source and copy it to replica"""
         for item in self.compared.source_only:
             to_copy = Path(self.source, item)
             action = "Copying"
@@ -69,8 +69,8 @@ class Synchronizer:
                 except Exception as e:
                     self.logger.error(error_message,action, to_copy, e)
 
-    def remove_extra_in_backup(self) -> None:
-        """Search for files and folders not present in source but present in backup and remove it from backup"""
+    def remove_extra_in_replica(self) -> None:
+        """Search for files and folders not present in source but present in replica and remove it from replica"""
         for item in self.compared.replica_only:
             to_delete = Path(self.replica, item)
             action = "Deleting"
@@ -93,7 +93,7 @@ class Synchronizer:
                     self.logger.error(self.error_message, action, "folder", to_delete, e)
 
     def sync_changed_files(self) -> None:
-        """Search for files that have been changed and sync it to backup"""
+        """Search for files that have been changed and sync it to replica"""
         for item in self.compared.diff_files:
             to_copy = Path(self.source, item)
             action = "Syncing"
@@ -106,14 +106,14 @@ class Synchronizer:
                     self.logger.error(self.error_message, action, "file", to_copy, e)
 
     def search_child_folders(self) -> None:
-        """Recursively search common folders between source and backup"""
+        """Recursively search common folders between source and replica"""
         for item in self.compared.common_dirs:
             Synchronizer(Path(self.source, item), Path(self.replica, item), self.logger).synchronize()
 
     def synchronize(self) -> None:
         """ Main method to synchronize the source and replica folders """
-        self.add_missing_in_backup()
-        self.remove_extra_in_backup()
+        self.add_missing_in_replica()
+        self.remove_extra_in_replica()
         self.sync_changed_files()
         self.search_child_folders()
 
