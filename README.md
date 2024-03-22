@@ -101,7 +101,7 @@ This class implements 4 methods that satisfies the requirements for the challeng
 1. Clone the repository
 
 ```
-git clone https://github.com/Desgue/Veeam_Python_Developer_Test/tree/implement/final-solution
+git clone https://github.com/Desgue/Veeam_Python_Developer_Test.git
 ```
 
 ## Usage
