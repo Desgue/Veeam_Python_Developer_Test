@@ -45,8 +45,8 @@ class Comparer:
         self.source_only = [i for i in self.source_content if i not in self.replica_content]
         self.replica_only = [i for i in self.replica_content if i not in self.source_content]
         self.common_dirs = [i for i in self.source_content if i in self.replica_content and Path(self.source_path, i).is_dir() and Path(self.replica_path, i).is_dir()]
-        self.common_file_names = [i for i in self.source_content if i in self.replica_content and Path(self.source_path, i).is_file() and Path(self.replica_path, i).is_file()]
-        self.diff_files = [i for i in self.common_file_names if self._file_changed(Path(self.source_path, i), Path(self.replica_path, i))]
+        self.common_file_names = [file_name for file_name in self.source_content if file_name in self.replica_content and Path(self.source_path, file_name).is_file() and Path(self.replica_path, file_name).is_file()]
+        self.diff_files = [file_name for file_name in self.common_file_names if self._file_changed(Path(self.source_path, file_name), Path(self.replica_path, file_name))]
 
     def _file_changed(self, source_file: Path, replica_file: Path) -> bool:
         """
