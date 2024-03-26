@@ -124,7 +124,7 @@ python main.py [--source <path_to_source_folder>] [--replica <path_to_replica_fo
 
 #### `-r`, `--replica` 
 - Description: Absolute path to the replica folder.
-- Usage: `--replica <absolute_path_to_replica_folder>` or `-b <absolute_path_to_replica_folder>`
+- Usage: `--replica <absolute_path_to_replica_folder>` or `-r <absolute_path_to_replica_folder>`
 - Required: True
 - Type: String
 
